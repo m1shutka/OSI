@@ -36,11 +36,20 @@ list* read_list() {
 	int val;
 	FILE* file;
 	file = fopen(file_name, "r");
-	while (fscanf(file, "%d", &val) != EOF) {
-		p->next = malloc(sizeof(list));
-		p = p->next;
-		p->value = val;
-		p->next = NULL;
+	int scan_r = 1;
+	while (scan_r != EOF) {
+		scan_r = fscanf(file, "%d", &val);
+		if (scan_r == 0) {
+			list* null_result = malloc(sizeof(list));
+			null_result->next = NULL;
+			return null_result;
+		}
+		else if (scan_r != -1) {
+			p->next = malloc(sizeof(list));
+			p = p->next;
+			p->value = val;
+			p->next = NULL;
+		}
 	}
 	fclose(file);
 	return head;
@@ -101,14 +110,14 @@ float average_list(list* head) {
 
 int sum() {
 	int option;
-	printf("This program calculates the sum of the list items. the list is filled in from a file or from the keyboard with integer values. The operating mode is selected in the following menu:\n");
+	printf("\nThis program calculates the sum of the list items. the list is filled in from a file or from the keyboard with integer values. The operating mode is selected in the following menu:\n");
 	printf("1 - Read data from file\n2 - Enter data on keyboard\nEnter a number for the operation:");
 	scanf("%d", &option);
 	list* lst;
 	if (option == 1) {
 		lst = read_list();
 		if (lst->next == NULL) {
-			printf("Error! Invalid file number entered!\n");
+			printf("Error! Invalid file number entered or the element does not match the integer type!\n");
 		}
 	}
 	else if (option == 2) {
@@ -128,7 +137,7 @@ int sum() {
 
 float average() {
 	int option;
-	printf("This program calculates the sum of the list items. the list is filled in from a file or from the keyboard with integer values. The operating mode is selected in the following menu:\n");
+	printf("\nThis program calculates the sum of the list items. the list is filled in from a file or from the keyboard with integer values. The operating mode is selected in the following menu:\n");
 	printf("1 - Read data from file\n2 - Enter data on keyboard\nEnter a number for the operation:");
 	scanf("%d", &option);
 	list* lst;
@@ -159,7 +168,7 @@ int main() {
 	float result2;
 	printf("The prog1 program calculates the sum of the list items. \n");
 	printf("The prog2 program calculates the arithmetic mean of the list items.\nThe list is filled in from a file or from the keyboard with integer values. The operating mode is selected in the following menu:\n");
-	printf("\n1 - prog1\n2 - prog2\nEnter a number for the program:");
+	printf("\n1 - prog1\n2 - prog2\nEny key - exit\nEnter a number for the program:");
 	scanf_s("%d", &option);
 	if (option == 1) {
 		result1 = sum();
@@ -168,8 +177,5 @@ int main() {
 	else if (option == 2) {
 		result2 = average();
 		printf("Result of prog2: %f\n", result2);
-	}
-	else {
-		printf("No such function!\n");
 	}
 }
